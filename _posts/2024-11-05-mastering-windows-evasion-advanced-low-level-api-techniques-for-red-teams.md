@@ -1,10 +1,9 @@
 ---
 layout: post
 title: "Deep Windows API Manipulation: Cutting-Edge Techniques for EDR Evasion and Stealth"
-date: 2024-11-05
+date: 2024-11-05 19:43:00 +0300
 categories: [Cybersecurity, Red Teaming]
 tags: [Windows API, EDR Evasion, Stealth, Persistence, Kernel Manipulation]
-author: SilentStrike
 ---
 
 # Unleashing Advanced Evasion Techniques in Windows with Low-Level API Manipulation
