@@ -71,7 +71,7 @@ pageviews:
   provider: # now only supports 'goatcounter'
 
 # Prefer color scheme setting.
-theme_mode: # [light | dark]
+theme_mode: dark
 
 # The CDN endpoint for media resources.
 cdn: "https://chirpy-img.netlify.app"
