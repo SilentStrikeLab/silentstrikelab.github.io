@@ -14,7 +14,7 @@ timezone: Asia/Riyadh
 
 title: SilentStrike # the main title
 
-tagline: SilentStrike | Red Teaming, Weaponization, & Evasion Experts. We specialize in stealth operations, custom cybersecurity tools, and advanced phishing strategies
+tagline: Red Teaming, Weaponization, & Evasion Experts. We specialize in stealth operations, custom cybersecurity tools, and advanced phishing strategies
 
 description: >- # used by SEO meta and the atom feed
   SilentStrike specializes in red teaming, stealth operations, and detection engineering, offering advanced cybersecurity tools and training.
@@ -77,7 +77,7 @@ theme_mode: dark
 cdn: "https://blog.silentstrike.io"
 
 # Avatar for the sidebar
-avatar: "/commons/avatar.jpg"
+avatar: "/commons/avatar.png"
 
 # Site-wide social preview image used in SEO `og:image` meta tag.
 social_preview_image: # string, local or CORS resources
