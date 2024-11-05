@@ -254,7 +254,7 @@ This approach prevents ETW from recording specific events, eliminating a primary
 
 `NtSetValueKey` allows malware to manipulate registry keys directly, avoiding higher-level registry APIs that EDRs often monitor. This helps establish persistence or disable security policies without detection.
 
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/d70b2679-d98c-463c-b73b-2d051ac003cd)
 
 
 ### Advanced Use Cases for Registry Persistence:
