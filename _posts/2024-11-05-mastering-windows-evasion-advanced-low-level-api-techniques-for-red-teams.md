@@ -16,6 +16,9 @@ In advanced adversarial operations, bypassing EDRs and security monitoring requi
 
 `NtCreateSection` is a powerful kernel-level function that creates a memory-mapped section that multiple processes can share. This is particularly useful for stealthy persistence, as sections can be used to hide code in non-pageable memory regions or even within critical system structures, making them nearly invisible to user-mode detection.
 
+![image](https://github.com/user-attachments/assets/8f5f7050-4e52-48d7-8372-d93469959442)
+
+
 ### Advanced Use Cases for `NtCreateSection`:
 
 - **Code Injection via Kernel Memory Sections**: By injecting code into a section and sharing it with other critical system processes, malware can establish a foothold that’s incredibly hard to detect. For example, you can create a section that maps memory into the System process (`PID 4`), essentially hiding code in an area few EDRs will inspect.
@@ -42,6 +45,9 @@ By mapping a section this way, malware can hide payloads in kernel memory region
 
 Standard ETW evasion involves patching or disabling functions like `EtwEventWrite`, but advanced tactics can target the ETW provider traits, controlling what gets logged at a configuration level without altering ETW functions directly. `EtwSetProviderTraits` is an undocumented API that allows for precise control over what an ETW provider reports.
 
+![image](https://github.com/user-attachments/assets/3e4fbcb0-84e2-4b70-886b-9fa3c8d7724e)
+
+
 ### Using `EtwSetProviderTraits` for Granular Event Control
 
 - **Selective Event Blocking**: By adjusting provider traits, you can configure which events from a provider are recorded and which are ignored. For example, disabling specific traits for Microsoft-Windows-Security-Auditing can prevent certain security logs from being generated.
@@ -64,6 +70,9 @@ Modifying ETW provider traits at this level can reduce logging from specific pro
 
 `NtCreateThreadEx` is a powerful thread creation function that gives more control than `CreateThread`, allowing for thread injection in suspended states, hidden entry points, and bypassing standard thread enumeration.
 
+![image](https://github.com/user-attachments/assets/241119a7-faa8-443d-bbe5-5d2ebd424a72)
+
+
 ### Advanced Use Cases for `NtCreateThreadEx`:
 
 - **Stealthy Thread Injection in Target Processes**: By creating threads in a target process in a suspended state and then hiding them from enumeration, malware can deploy payloads undetected, avoiding both user-mode and kernel-mode hooks.
@@ -84,6 +93,9 @@ This approach creates a thread that won’t show up in common enumeration routin
 ## 4. Hidden Execution Layers with `NtAllocateVirtualMemory` and `PAGE_WRITECOMBINE`
 
 `NtAllocateVirtualMemory` is typically used for memory allocation, but combining it with specific memory protection flags, such as `PAGE_WRITECOMBINE`, allows malware to allocate hidden memory regions with non-standard properties. This can be further obscured by embedding code into sparse regions of virtual memory.
+
+![image](https://github.com/user-attachments/assets/5bb6b9d2-fc7b-47b0-a367-7228e0727833)
+
 
 ### Advanced Use Cases with `PAGE_WRITECOMBINE` and Sparse Memory:
 
@@ -108,6 +120,8 @@ Sparse memory allocation with unconventional permissions makes traditional memor
 
 Marking processes as critical with `RtlSetProcessIsCritical` provides persistence by locking the process against termination attempts from both user-mode and kernel-mode operations. This technique prevents system tampering by setting specific processes as irremovable, only terminating if explicitly removed by an administrator or by crashing the system.
 
+![image](https://github.com/user-attachments/assets/2f673c1a-be3d-42db-9bb8-770c7aac260a)
+
 ### Advanced Use Cases with Critical Processes:
 
 - **Multi-Stage Persistence**: By spawning multiple child processes with `RtlSetProcessIsCritical`, malware can set up a process hierarchy where terminating one process forces the others to reinitialize, creating a resilient persistence model.
@@ -131,6 +145,9 @@ By combining critical processes with stealth tactics, malware gains a robust per
 
 - **Process-Level Memory Hook Blocking**: By blocking specific trace classes, malware can evade monitoring solutions that trace specific memory regions (e.g., process heaps).
 
+![image](https://github.com/user-attachments/assets/03fa2a6c-4105-463a-b93f-077064a0970d)
+
+
 - **Dynamic Trace Evasion for Anti-Analysis**: Adjusting memory traces on-the-fly based on sandbox indicators prevents static analysis and makes it difficult for memory-based forensic tools to track malware activity in real-time.
 
 ### Code Example: Trace Blocking for Memory Regions
@@ -147,6 +164,9 @@ Memory trace blocking directly undermines tools that rely on continuous memory i
 ## 7. Token Manipulation with `NtOpenProcessTokenEx` and `NtDuplicateToken`
 
 Manipulating access tokens of high-privilege processes (like `SYSTEM`) allows malware to execute with elevated permissions without triggering typical privilege escalation alerts. `NtOpenProcessTokenEx` and `NtDuplicateToken` can clone and reuse privileged tokens stealthily.
+
+![image](https://github.com/user-attachments/assets/75f499dd-47ab-40ef-afe3-3df5dad907c8)
+
 
 ### Advanced Use Cases for Token Manipulation:
 
@@ -168,6 +188,9 @@ By hijacking and impersonating high-privilege tokens, malware can evade security
 
 `NtMapViewOfSection` allows mapping memory across process boundaries, providing a stealthy way to inject code. Injecting in suspended state helps prevent detection, allowing code to run without immediately executing.
 
+![image](https://github.com/user-attachments/assets/30d17d2d-0dd8-4cda-965a-6a05cc1f4001)
+
+
 ### Advanced Use Cases for Suspended Injection:
 
 - **Silent Memory Injection**: Map sections into target processes without executing code, avoiding thread-based monitoring and immediate scans.
@@ -187,6 +210,9 @@ This approach maps memory invisibly, bypassing user-mode API hooks typically mon
 
 `RtlCreateHeap` can create hidden memory regions within processes, avoiding common heap scanning tools. Setting custom flags can hide code in private heaps that are rarely inspected.
 
+![image](https://github.com/user-attachments/assets/5d747bd6-e224-43db-b2f0-1b25d892b014)
+
+
 ### Advanced Use Cases for Hidden Heaps:
 
 - **Isolated Code Storage**: Store payloads in private heaps that standard user-mode heap inspections don’t target.
@@ -205,6 +231,9 @@ This makes the payload hard to find, as it’s isolated from the standard heap s
 ## 10. ETW Patching with `EtwEventWrite`
 
 Many security tools use Event Tracing for Windows (ETW) to monitor system events. By directly patching or disabling `EtwEventWrite`, malware can prevent events from being logged without altering ETW providers.
+
+![image](https://github.com/user-attachments/assets/0f2a40fb-fdc8-47be-a499-ffbaba79d02d)
+
 
 ### Advanced Use Cases for ETW Patching:
 
