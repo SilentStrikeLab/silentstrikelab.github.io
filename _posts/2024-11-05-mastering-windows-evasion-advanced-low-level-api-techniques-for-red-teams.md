@@ -254,6 +254,9 @@ This approach prevents ETW from recording specific events, eliminating a primary
 
 `NtSetValueKey` allows malware to manipulate registry keys directly, avoiding higher-level registry APIs that EDRs often monitor. This helps establish persistence or disable security policies without detection.
 
+![Uploading image.png…]()
+
+
 ### Advanced Use Cases for Registry Persistence:
 
 - **Stealthy Persistence Keys**: Modify `Run` or `RunOnce` registry entries to add persistence without flagging common monitoring tools.
@@ -272,6 +275,9 @@ By writing directly to the registry, malware can bypass user-mode registry monit
 ## 12. Hook Obfuscation with `NtProtectVirtualMemory`
 
 Using `NtProtectVirtualMemory`, malware can unhook functions in protected DLLs by modifying their memory protections and overwriting hooks set by EDRs.
+
+![image](https://github.com/user-attachments/assets/09ffaf64-a5d4-4a57-832d-10cf29e575f3)
+
 
 ### Advanced Use Cases for Hook Evasion:
 
@@ -293,6 +299,9 @@ This prevents the EDR from capturing API calls, allowing stealthy execution.
 
 Certain drivers expose functionality through `DeviceIoControl`, allowing malware to execute payloads in a lower-level context without creating threads or direct kernel interactions.
 
+![image](https://github.com/user-attachments/assets/0fe7ec96-c1c4-443a-97c3-85c56de517fb)
+
+
 ### Advanced Use Cases with DeviceIoControl:
 
 - **Privileged Execution via Third-Party Drivers**: Exploit less-secure drivers to perform privileged actions without full kernel access.
@@ -310,6 +319,9 @@ This leverages low-level drivers to perform actions that bypass common process m
 ## 14. Fileless Execution Using `NtAllocateVirtualMemory`
 
 Using `NtAllocateVirtualMemory` to create executable, memory-only regions helps achieve fileless execution, which evades signature-based detection and anti-virus.
+
+![image](https://github.com/user-attachments/assets/7580345f-49a4-403e-8ec1-b04823d8308b)
+
 
 ### Advanced Use Cases for Fileless Malware:
 
@@ -330,6 +342,9 @@ By avoiding disk usage, this technique greatly reduces the forensic footprint.
 
 Setting `ThreadHideFromDebugger` on specific threads prevents them from being inspected by debuggers, frustrating analysis and hindering EDRs that rely on debugging techniques.
 
+![image](https://github.com/user-attachments/assets/525f55a9-860c-4096-be0e-f2b7d260af5e)
+
+
 ### Advanced Use Cases for Anti-Debugging:
 
 - **Invisible Threads for Payload Execution**: Run critical code in hidden threads that are difficult to detect and enumerate.
@@ -347,6 +362,9 @@ Hidden threads evade monitoring from tools that rely on debugging hooks.
 ## 16. Named Pipe Impersonation with `ImpersonateNamedPipeClient`
 
 Using `ImpersonateNamedPipeClient` can allow malware to impersonate clients connected to a named pipe, gaining access to higher-privilege tokens in certain scenarios.
+
+![image](https://github.com/user-attachments/assets/547c04d7-4e25-49e4-b45f-df3843555b87)
+
 
 ### Advanced Use Cases for Impersonation:
 
@@ -366,6 +384,9 @@ This enables indirect access to elevated privileges.
 ## 17. Thread Injection with `NtQueueApcThread`
 
 Using `NtQueueApcThread`, malware can queue asynchronous procedure calls (APCs) to inject code into another process’s existing threads, avoiding new thread creation.
+
+![image](https://github.com/user-attachments/assets/25a335f6-2cd6-435b-ad34-e6d78b3867a2)
+
 
 ### Advanced Use Cases for APC Injection:
 
