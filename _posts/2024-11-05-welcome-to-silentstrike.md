@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Welcome to SilentStrike"
-date: 2024-11-05 19:00:00 +0300
+date: 2024-11-04 19:00:00 +0300
 categories: [Welcome, Introduction]
 tags: [SilentStrike, Red Teaming, Cybersecurity, Detection Engineering]
 author: SilentStrike
