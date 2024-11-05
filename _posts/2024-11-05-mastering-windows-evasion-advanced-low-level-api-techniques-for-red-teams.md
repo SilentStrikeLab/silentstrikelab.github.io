@@ -144,7 +144,213 @@ NtTraceControl(TraceProcessMemory, &traceControlInfo, sizeof(traceControlInfo), 
 
 Memory trace blocking directly undermines tools that rely on continuous memory introspection, effectively cloaking malware actions.
 
----
+## 7. Token Manipulation with `NtOpenProcessTokenEx` and `NtDuplicateToken`
+
+Manipulating access tokens of high-privilege processes (like `SYSTEM`) allows malware to execute with elevated permissions without triggering typical privilege escalation alerts. `NtOpenProcessTokenEx` and `NtDuplicateToken` can clone and reuse privileged tokens stealthily.
+
+### Advanced Use Cases for Token Manipulation:
+
+- **Privilege Escalation without Elevation**: Hijack high-privilege tokens and apply them to malicious processes to bypass User Account Control (UAC) and EDR checks.
+
+- **Impersonation of Trusted Processes**: Clone and apply tokens from trusted processes like `lsass.exe` for stealthy actions under a trusted process context.
+
+### Code Example: SYSTEM Token Impersonation
+
+```cpp
+HANDLE hToken;
+NtOpenProcessTokenEx(GetCurrentProcess(), TOKEN_DUPLICATE | TOKEN_IMPERSONATE, &hToken);
+SetThreadToken(NULL, hToken);
+```
+
+By hijacking and impersonating high-privilege tokens, malware can evade security checks tied to process privileges.
+
+## 8. Process Injection with `NtMapViewOfSection` in Suspended State
+
+`NtMapViewOfSection` allows mapping memory across process boundaries, providing a stealthy way to inject code. Injecting in suspended state helps prevent detection, allowing code to run without immediately executing.
+
+### Advanced Use Cases for Suspended Injection:
+
+- **Silent Memory Injection**: Map sections into target processes without executing code, avoiding thread-based monitoring and immediate scans.
+
+- **Delayed Execution in Target Process**: Run injected code only when specific conditions are met, reducing visibility.
+
+### Code Example: Mapping Hidden Section into Target Process
+
+```cpp
+HANDLE hSection;
+NtMapViewOfSection(hSection, hTargetProcess, &baseAddress, 0, 0, NULL, &viewSize, ViewShare, 0, PAGE_EXECUTE_READWRITE);
+```
+
+This approach maps memory invisibly, bypassing user-mode API hooks typically monitored by EDRs.
+
+## 9. Heap Hiding with `RtlCreateHeap` and Custom Flags
+
+`RtlCreateHeap` can create hidden memory regions within processes, avoiding common heap scanning tools. Setting custom flags can hide code in private heaps that are rarely inspected.
+
+### Advanced Use Cases for Hidden Heaps:
+
+- **Isolated Code Storage**: Store payloads in private heaps that standard user-mode heap inspections don’t target.
+
+- **Heap-based Anti-Forensics**: Cause controlled corruption in specific environments (e.g., in sandboxed debugging) by creating heaps with specific flags that resist inspection.
+
+### Code Example: Creating a Private Heap
+
+```cpp
+PVOID hHeap = RtlCreateHeap(HEAP_CREATE_ALIGN_16 | HEAP_GENERATE_EXCEPTIONS, NULL, 0, 0, NULL, NULL);
+RtlAllocateHeap(hHeap, 0, payloadSize);
+```
+
+This makes the payload hard to find, as it’s isolated from the standard heap structure.
+
+## 10. ETW Patching with `EtwEventWrite`
+
+Many security tools use Event Tracing for Windows (ETW) to monitor system events. By directly patching or disabling `EtwEventWrite`, malware can prevent events from being logged without altering ETW providers.
+
+### Advanced Use Cases for ETW Patching:
+
+- **Silencing Specific Logs**: Patch `EtwEventWrite` to ignore critical events, especially in high-sensitivity areas like security audits.
+
+- **Anti-Forensics in Real-Time Logging**: Disrupt logging in real-time without disabling ETW, minimizing footprints during execution.
+
+### Code Example: Disabling `EtwEventWrite`
+
+```cpp
+BYTE patch[] = { 0xC3 }; // `RET` instruction to disable function
+memcpy(EtwEventWrite, patch, sizeof(patch));
+```
+
+This approach prevents ETW from recording specific events, eliminating a primary source of EDR data.
+
+## 11. Registry Manipulation with `NtSetValueKey`
+
+`NtSetValueKey` allows malware to manipulate registry keys directly, avoiding higher-level registry APIs that EDRs often monitor. This helps establish persistence or disable security policies without detection.
+
+### Advanced Use Cases for Registry Persistence:
+
+- **Stealthy Persistence Keys**: Modify `Run` or `RunOnce` registry entries to add persistence without flagging common monitoring tools.
+
+- **Disabling Security Policies**: Modify security-related registry keys like disabling Windows Defender through direct registry writes.
+
+### Code Example: Setting a Persistence Key
+
+```cpp
+HKEY hKey;
+NtSetValueKey(hKey, &keyName, 0, REG_SZ, payloadPath, pathSize);
+```
+
+By writing directly to the registry, malware can bypass user-mode registry monitoring hooks.
+
+## 12. Hook Obfuscation with `NtProtectVirtualMemory`
+
+Using `NtProtectVirtualMemory`, malware can unhook functions in protected DLLs by modifying their memory protections and overwriting hooks set by EDRs.
+
+### Advanced Use Cases for Hook Evasion:
+
+- **Unhooking API Functions**: Restore the original code of critical functions like `NtOpenProcess` to prevent EDR monitoring.
+
+- **Self-Protection Against Memory Tampering**: Use this to protect regions of memory, blocking attempts to re-hook.
+
+### Code Example: Unhooking Function
+
+```cpp
+NtProtectVirtualMemory(hProcess, &apiAddr, &regionSize, PAGE_EXECUTE_READWRITE, &oldProtect);
+memcpy(apiAddr, originalBytes, sizeof(originalBytes));
+NtProtectVirtualMemory(hProcess, &apiAddr, &regionSize, oldProtect, &oldProtect);
+```
+
+This prevents the EDR from capturing API calls, allowing stealthy execution.
+
+## 13. DeviceIoControl-Based Payload Execution
+
+Certain drivers expose functionality through `DeviceIoControl`, allowing malware to execute payloads in a lower-level context without creating threads or direct kernel interactions.
+
+### Advanced Use Cases with DeviceIoControl:
+
+- **Privileged Execution via Third-Party Drivers**: Exploit less-secure drivers to perform privileged actions without full kernel access.
+
+- **Indirect Code Execution in Kernel Context**: Use drivers to run code indirectly, evading process-based detection.
+
+### Code Example: Sending Payload via IOCTL
+
+```cpp
+DeviceIoControl(hDevice, IOCTL_CODE, inputBuffer, sizeof(inputBuffer), outputBuffer, sizeof(outputBuffer), &bytesReturned, NULL);
+```
+
+This leverages low-level drivers to perform actions that bypass common process monitoring.
+
+## 14. Fileless Execution Using `NtAllocateVirtualMemory`
+
+Using `NtAllocateVirtualMemory` to create executable, memory-only regions helps achieve fileless execution, which evades signature-based detection and anti-virus.
+
+### Advanced Use Cases for Fileless Malware:
+
+- **Stealthy Payload Execution in Memory**: Allocate memory and execute without writing to disk, leaving no file artifacts.
+
+- **Self-Modifying Code in Memory**: Load self-contained, mutable payloads that adapt dynamically, bypassing static analysis.
+
+### Code Example: Memory Allocation for Fileless Payload
+
+```cpp
+NtAllocateVirtualMemory(GetCurrentProcess(), &baseAddr, 0, &regionSize, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+memcpy(baseAddr, payload, payloadSize);
+```
+
+By avoiding disk usage, this technique greatly reduces the forensic footprint.
+
+## 15. Anti-Debugging with `NtSetInformationThread` and `ThreadHideFromDebugger`
+
+Setting `ThreadHideFromDebugger` on specific threads prevents them from being inspected by debuggers, frustrating analysis and hindering EDRs that rely on debugging techniques.
+
+### Advanced Use Cases for Anti-Debugging:
+
+- **Invisible Threads for Payload Execution**: Run critical code in hidden threads that are difficult to detect and enumerate.
+
+- **Protection Against Analysis**: Disrupt memory-based debugging, making analysis impractical.
+
+### Code Example: Hiding Threads
+
+```cpp
+NtSetInformationThread(hThread, ThreadHideFromDebugger, NULL, 0);
+```
+
+Hidden threads evade monitoring from tools that rely on debugging hooks.
+
+## 16. Named Pipe Impersonation with `ImpersonateNamedPipeClient`
+
+Using `ImpersonateNamedPipeClient` can allow malware to impersonate clients connected to a named pipe, gaining access to higher-privilege tokens in certain scenarios.
+
+### Advanced Use Cases for Impersonation:
+
+- **Privilege Escalation via Trusted Pipes**: Impersonate clients on trusted pipes to elevate permissions.
+
+- **Cross-Process Evasion**: Use impersonation to interact with other processes stealthily.
+
+### Code Example: Named Pipe Impersonation
+
+```cpp
+HANDLE hPipe = CreateNamedPipe(...);
+ImpersonateNamedPipeClient(hPipe);
+```
+
+This enables indirect access to elevated privileges.
+
+## 17. Thread Injection with `NtQueueApcThread`
+
+Using `NtQueueApcThread`, malware can queue asynchronous procedure calls (APCs) to inject code into another process’s existing threads, avoiding new thread creation.
+
+### Advanced Use Cases for APC Injection:
+
+- **Silent Injection**: Execute code within existing threads of a target process, avoiding thread creation that EDRs monitor.
+
+- **Stealthy Execution Flow**: Trigger payloads at specific points by scheduling APCs on benign threads.
+
+### Code Example: APC Injection
+
+```cpp
+NtQueueApcThread(hThread, (PKNORMAL_ROUTINE)payloadAddr, NULL, NULL, NULL);
+```
+
+APCs allow code to run as part of a legitimate process flow, evading detection.
 
 ## Conclusion
 
@@ -157,4 +363,3 @@ These techniques highlight the need for defensive tools to advance in response, 
 ## Disclaimer
 
 The content here is provided strictly for educational and authorized red teaming purposes. Unauthorized use may result in severe legal consequences.
-
