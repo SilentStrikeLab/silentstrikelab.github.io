@@ -80,7 +80,7 @@ cdn: "https://blog.silentstrike.io"
 avatar: "/commons/avatar.png"
 
 # Site-wide social preview image used in SEO `og:image` meta tag.
-social_preview_image: "https://blog.silentstrike.io/commons/avatar.jpg"
+social_preview_image: 
 
 # TOC in posts.
 toc: true
