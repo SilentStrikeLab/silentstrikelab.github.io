@@ -74,7 +74,7 @@ pageviews:
 theme_mode: dark
 
 # The CDN endpoint for media resources.
-cdn: "https://chirpy-img.netlify.app"
+cdn: "https://blog.silentstrike.io"
 
 # Avatar for the sidebar
 avatar: "/commons/avatar.jpg"
