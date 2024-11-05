@@ -77,7 +77,7 @@ theme_mode: dark
 cdn: "https://blog.silentstrike.io"
 
 # Avatar for the sidebar
-avatar: "/commons/avatar.png"
+avatar: "/commons/av2.png"
 
 # Site-wide social preview image used in SEO `og:image` meta tag.
 social_preview_image: "https://blog.silentstrike.io/commons/avatar.jpg"
