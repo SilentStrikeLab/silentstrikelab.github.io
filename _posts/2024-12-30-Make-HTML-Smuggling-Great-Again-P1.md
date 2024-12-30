@@ -5,7 +5,7 @@ date: 2024-12-30
 categories: security html
 ---
 
-# Make HTML Smuggling Great Again P1
+# Make HTML Smuggling Great Again P1 
 
 ## Introduction
 
