@@ -1,15 +1,8 @@
-name: "Build and Deploy"
+name: Deploy Jekyll site to Pages
+
 on:
   push:
-    branches:
-      - main
-      - master
-    paths-ignore:
-      - .gitignore
-      - README.md
-      - LICENSE
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: ["gh-pages"]
   workflow_dispatch:
 
 permissions:
@@ -17,49 +10,43 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    container: ruby:3.3
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          # submodules: true
-          # If using the 'assets' git submodule from Chirpy Starter, uncomment above
-          # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
+      - uses: actions/checkout@v4
+
+      - name: System deps
+        run: |
+          apt-get update
+          apt-get install -y build-essential libffi-dev zlib1g-dev \
+                             libssl-dev libyaml-dev libreadline-dev nodejs
+
+      - name: Bundle install (cached)
+        run: |
+          gem install bundler
+          bundle config set path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.3
-          bundler-cache: true
-
-      - name: Build site
-        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
+      - name: Build with Jekyll (Chirpy gem)
         env:
-          JEKYLL_ENV: "production"
-
-      - name: Test site
+          JEKYLL_ENV: production
         run: |
-          bundle exec htmlproofer _site \
-            \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
 
-      - name: Upload site artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_site${{ steps.pages.outputs.base_path }}"
+          path: _site
 
   deploy:
     environment:
