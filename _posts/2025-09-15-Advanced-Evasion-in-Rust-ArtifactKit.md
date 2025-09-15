@@ -48,21 +48,8 @@ We analyze a Rust‑based artifact loader architecture designed to reduce classi
 
 ## 1) Architecture Overview
 
-```mermaid
-flowchart LR
-  subgraph Build/Prep
-    A[Rust artifact template] -->|static asset| B[Template on disk]
-    C[CNA/Aggressor script] -->|embed container + encrypted blob| D[Patched artifact]
-  end
+<img width="1122" height="276" alt="image" src="https://github.com/user-attachments/assets/334d66ba-8396-4718-8739-fec14d2f474d" />
 
-  subgraph Runtime
-    D --> E[Container parse & validation]
-    E --> F[API resolver PEB walk + hashing]
-    E --> G[Section mapping dual views]
-    G --> H[Fiber trampoline control transfer]
-  end
-  F -.-> I[Forwarded exports]
-```
 
 **Properties**
 - **No static imports**: APIs are resolved at runtime by iterating loaded modules.
@@ -97,23 +84,9 @@ A compact container—written by CNA—is embedded into the template at a known 
 ## 3) API Hashing & Dynamic Resolution
 
 ### Conceptual sequence
-```mermaid
-sequenceDiagram
-  participant L as Loader (stub)
-  participant P as PEB/LDR
-  participant M as Candidate module
-  participant X as Export directory
 
-  L->>P: Enumerate loaded modules
-  L->>M: Candidate base address
-  L->>X: Iterate exported names
-  X-->>L: name → ordinal → RVA
-  alt Forwarded export
-    L->>P: Resolve target module
-    L->>X: Rescan exports in target
-  end
-  L-->>L: Store resolved pointer(s)
-```
+<img width="912" height="591" alt="image" src="https://github.com/user-attachments/assets/5967306c-f901-4e94-bc99-5b580d1d3f82" />
+
 
 ### Non‑executable pseudocode
 ```pseudo
@@ -155,13 +128,8 @@ Create a **section object** and map it **twice**:
 - **RW view** for copying decoded bytes.
 - **RX view** for executing the same underlying pages; avoids `VirtualProtect`.
 
-```mermaid
-flowchart TB
-  A[Create Section SEC_*] --> B[Map View #1 READWRITE]
-  B --> C[Decode + copy payload]
-  A --> D[Map View #2 EXECUTE_READ]
-  C --> E[Transfer control to RX view]
-```
+<img width="668" height="460" alt="image" src="https://github.com/user-attachments/assets/d9067125-3531-4ed2-802a-9518ef7663d2" />
+
 
 ### Non‑executable pseudocode
 ```pseudo
@@ -184,17 +152,8 @@ jump_to(rx)
 ### Concept
 Use **fibers** to move execution within the current OS thread, avoiding `CreateThread/ResumeThread` patterns.
 
-```mermaid
-sequenceDiagram
-  participant T as Current thread
-  participant F as Fiber runtime
-  participant P as Payload RX view
+<img width="641" height="391" alt="image" src="https://github.com/user-attachments/assets/d506d621-4a0d-4065-9bac-67af633467c1" />
 
-  T->>F: ConvertThreadToFiber
-  T->>F: CreateFiber start=P.entry
-  F->>P: SwitchToFiber
-  P-->>F: return optional
-```
 
 ### Non‑executable pseudocode
 ```pseudo
@@ -214,19 +173,9 @@ fiber_switch(payload_fiber)
 The CNA script functions as a **structured patcher**. It transforms a static template into a per‑task artifact while preserving strict ABI contracts with the stub.
 
 ### High‑level sequence
-```mermaid
-sequenceDiagram
-  participant TS as Team Server
-  participant CNA as Script layer
-  participant T as Template artifact
-  participant AR as Patched artifact
 
-  TS->>CNA: Request artifact
-  CNA->>T: Read template markers present
-  CNA->>CNA: Generate 8B key to encode payload
-  CNA->>AR: Write container header + blob over marker
-  CNA-->>TS: Return patched artifact
-```
+<img width="925" height="457" alt="image" src="https://github.com/user-attachments/assets/c07a8aea-3654-4ebe-90be-46b9eca24264" />
+
 
 ### Integration contracts
 - **Marker protocol**: Template includes long runs of `A` (container slot) and optionally `M` (spawnto slot). CNA finds and replaces them. Stub reads the same regions at runtime.
