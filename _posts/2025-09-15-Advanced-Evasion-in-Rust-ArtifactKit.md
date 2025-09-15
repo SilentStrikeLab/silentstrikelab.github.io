@@ -157,9 +157,9 @@ Create a **section object** and map it **twice**:
 
 ```mermaid
 flowchart TB
-  A[Create Section (SEC_*)] --> B[Map View #1 (READWRITE)]
+  A[Create Section SEC_*] --> B[Map View #1 READWRITE]
   B --> C[Decode + copy payload]
-  A --> D[Map View #2 (EXECUTE_READ)]
+  A --> D[Map View #2 EXECUTE_READ]
   C --> E[Transfer control to RX view]
 ```
 
