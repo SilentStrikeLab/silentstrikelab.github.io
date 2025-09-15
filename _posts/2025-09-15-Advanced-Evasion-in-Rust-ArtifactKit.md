@@ -89,7 +89,7 @@ A compact container—written by CNA—is embedded into the template at a known 
 
 
 ### Non‑executable pseudocode
-```pseudo
+```cpp
 fn hash_name(name) -> u32:
     h := SEED
     for b in bytes(name): h := (h * FACTOR) + b
@@ -156,7 +156,7 @@ Use **fibers** to move execution within the current OS thread, avoiding `CreateT
 
 
 ### Non‑executable pseudocode
-```pseudo
+```cpp
 main_fiber := fiber_convert(current_thread)
 payload_fiber := fiber_create(entry=rx_entry_point)
 fiber_switch(payload_fiber)
@@ -184,7 +184,7 @@ The CNA script functions as a **structured patcher**. It transforms a static tem
 - **Size constraints**: CNA enforces upper bounds; stub re‑checks `length`.
 
 ### Non‑executable pseudocode
-```pseudo
+```cpp
 # CNA side
 key := random_bytes(8)
 if has_marker_M: write_xor_spawnto(template, key)
@@ -196,7 +196,7 @@ container := header || blob
 write_at(template, a_pos, container)
 ```
 
-```pseudo
+```cpp
 # Stub side
 container := read_container_from_known_region()
 require(0 < container.length <= MAX)
@@ -288,7 +288,7 @@ Some variants replace user‑mode APIs with **direct syscalls** to reduce exposu
 - **Keying**: Per‑artifact small key used for obfuscation; not cryptographic security.
 
 ### 13.2 Non‑Executable Snippets (Illustrative)
-```pseudo
+```cpp
 # Rolling XOR
 for i in range(0, len(payload)):
     out[i] = payload[i] XOR key[i mod len(key)]
