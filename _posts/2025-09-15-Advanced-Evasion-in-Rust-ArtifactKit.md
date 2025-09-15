@@ -13,6 +13,9 @@ tags: [Windows API, EDR Evasion, Stealth]
 
 > **Ethical scope**: This article is written for blue teams, incident responders, and security researchers. It explains evasion tradecraft at a **conceptual** level to strengthen defenses. All code fragments are **non‑executable pseudocode**; there are no operational instructions or runnable artifacts.
 
+> **Source code of the ArtifactKit**: You can find the src code of our project on our GitHub HERE.
+
+
 ## Abstract
 We analyze a Rust‑based artifact loader architecture designed to reduce classic detection signals such as import tables, RWX permission flips, and thread‑creation artifacts. The design combines compile‑time API hashing, PEB‑based dynamic resolution, section‑object dual mapping (separate READWRITE and EXECUTE_READ views), and fiber‑based execution. We detail how a CNA/Aggressor script integrates with a Rust template through a strict marker‑and‑container contract, then provide hunting heuristics, ATT&CK mappings, a validation protocol, and measurement guidance for defenders.
 
