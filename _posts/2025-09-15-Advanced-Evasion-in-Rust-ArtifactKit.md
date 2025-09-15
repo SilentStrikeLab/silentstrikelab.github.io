@@ -57,9 +57,9 @@ flowchart LR
 
   subgraph Runtime
     D --> E[Container parse & validation]
-    E --> F[API resolver<br/>(PEB walk + hashing)]
-    E --> G[Section mapping<br/>(dual views)]
-    G --> H[Fiber trampoline<br/>(control transfer)]
+    E --> F[API resolver (PEB walk + hashing)]
+    E --> G[Section mapping (dual views)]
+    G --> H[Fiber trampoline (control transfer)]
   end
   F -.-> I[Forwarded exports]
 ```
