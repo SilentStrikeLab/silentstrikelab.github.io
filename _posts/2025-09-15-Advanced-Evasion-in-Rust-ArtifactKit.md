@@ -223,7 +223,7 @@ sequenceDiagram
 
   TS->>CNA: Request artifact
   CNA->>T: Read template markers present
-  CNA->>CNA: Generate 8B key; encode payload
+  CNA->>CNA: Generate 8B key to encode payload
   CNA->>AR: Write container header + blob over marker
   CNA-->>TS: Return patched artifact
 ```
