@@ -188,12 +188,12 @@ Use **fibers** to move execution within the current OS thread, avoiding `CreateT
 sequenceDiagram
   participant T as Current thread
   participant F as Fiber runtime
-  participant P as Payload (RX view)
+  participant P as Payload RX view
 
   T->>F: ConvertThreadToFiber
-  T->>F: CreateFiber(start=P.entry)
+  T->>F: CreateFiber start=P.entry
   F->>P: SwitchToFiber
-  P-->>F: return (optional)
+  P-->>F: return optional
 ```
 
 ### Non‑executable pseudocode
@@ -222,9 +222,9 @@ sequenceDiagram
   participant AR as Patched artifact
 
   TS->>CNA: Request artifact
-  CNA->>T: Read template (markers present)
+  CNA->>T: Read template markers present
   CNA->>CNA: Generate 8B key; encode payload
-  CNA->>AR: Write container (header + blob) over marker
+  CNA->>AR: Write container header + blob over marker
   CNA-->>TS: Return patched artifact
 ```
 
@@ -327,39 +327,9 @@ Some variants replace user‑mode APIs with **direct syscalls** to reduce exposu
 
 ---
 
-## 13) Lab Validation Protocol (Safe)
-- **Environment**: Isolated VMs, snapshots enabled; kernel ETW provider; EDR test mode if available.
-- **Payload**: Benign no‑op (allocates memory, writes, exits); no networking.
-- **Data capture**: ETW: ImageLoad, Process, Thread, MapView; EDR memory views if available.
-- **Measures**: Time‑to‑Detect (TTD), true‑positive on synthetic scenarios; false‑positive on benign workloads.
-- **Repetition**: ≥30 runs per variant; report median and IQR.
+## 13) Appendices
 
----
-
-## 14) Benchmarking Methodology (Non‑Payload Ops)
-- **Scenarios**: Baseline (no loader), resolver‑only scan, dual‑mapping variant, fiber‑trampoline variant.
-- **Metrics**: Telemetry coverage per signal; alert precision/recall on synthetic labels; overhead (CPU %, context switches, map/unmap counts).
-- **Reporting**: Boxplots for TTD; confusion matrices per scenario; outlier policy disclosed.
-
----
-
-## 15) Ethics, Legal, and Reproducibility Checklist
-- Use only in **authorized lab settings** with written consent.
-- Publish **defensive indicators** and methodology; avoid runnable artifacts.
-- Provide a **coordinated disclosure** channel for vendor‑relevant findings.
-
-**Reproducibility checklist**
-- [ ] Diagrams render (Mermaid support on the blog platform).
-- [ ] All code is non‑executable pseudocode.
-- [ ] Lab instructions contain no operational payload details.
-- [ ] ATT&CK mapping validated for version/date.
-- [ ] Metrics reproducible with the provided protocol.
-
----
-
-## 16) Appendices
-
-### 16.1 Glossary
+### 13.1 Glossary
 - **PEB**: Process Environment Block; OS structure listing loaded modules.
 - **Forwarded Export**: Export entry that redirects to another module’s export.
 - **Fiber**: User‑mode cooperative scheduling primitive; runs within an existing thread.
@@ -368,7 +338,7 @@ Some variants replace user‑mode APIs with **direct syscalls** to reduce exposu
 - **Dual mapping**: Two memory views of one section with different protections.
 - **Keying**: Per‑artifact small key used for obfuscation; not cryptographic security.
 
-### 16.2 Non‑Executable Snippets (Illustrative)
+### 13.2 Non‑Executable Snippets (Illustrative)
 ```pseudo
 # Rolling XOR
 for i in range(0, len(payload)):
