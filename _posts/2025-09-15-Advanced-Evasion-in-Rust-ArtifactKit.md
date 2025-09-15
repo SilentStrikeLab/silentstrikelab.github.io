@@ -51,7 +51,7 @@ We analyze a Rust‑based artifact loader architecture designed to reduce classi
 ```mermaid
 flowchart LR
   subgraph Build/Prep
-    A[Rust artifact template<br/> (marker buffers)] -->|static asset| B[Template (on disk)]
+    A[Rust artifact template (marker buffers)] -->|static asset| B[Template (on disk)]
     C[CNA/Aggressor script] -->|embed container + encrypted blob| D[Patched artifact]
   end
 
