@@ -1,8 +1,15 @@
-name: Deploy Jekyll site to Pages
-
+name: "Build and Deploy"
 on:
   push:
-    branches: ["gh-pages"]
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - .gitignore
+      - README.md
+      - LICENSE
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
@@ -10,36 +17,33 @@ permissions:
   pages: write
   id-token: write
 
+# Allow one concurrent deployment
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Install Ruby dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ruby-full build-essential zlib1g-dev
-          
+      - uses: actions/checkout@v4
+
       - name: Setup Ruby
-        run: |
-          gem install bundler
-          bundle install
-          
+        uses: ruby/setup-ruby@v1
+        with:
+          # or omit to read from .ruby-version
+          ruby-version: '3.1.4'
+          bundler-cache: true   # runs bundle install & caches gems
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-        
+
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
-          
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
