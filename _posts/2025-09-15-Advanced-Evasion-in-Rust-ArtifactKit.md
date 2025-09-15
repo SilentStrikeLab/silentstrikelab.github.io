@@ -13,7 +13,7 @@ tags: [Windows API, EDR Evasion, Stealth]
 
 > **Ethical scope**: This article is written for blue teams, incident responders, and security researchers. It explains evasion tradecraft at a **conceptual** level to strengthen defenses. All code fragments are **non‑executable pseudocode**; there are no operational instructions or runnable artifacts.
 
-> **Source code of the ArtifactKit**: You can find the src code of our project on our GitHub HERE.
+> **Source code of the ArtifactKit**: You can find the src code of our project on our GitHub [Check Here](https://github.com/SilentStrikeLab/Rust-Cobalt-Strike-Artifact-Kit/).
 
 
 ## Abstract
