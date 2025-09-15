@@ -51,15 +51,15 @@ We analyze a Rust‑based artifact loader architecture designed to reduce classi
 ```mermaid
 flowchart LR
   subgraph Build/Prep
-    A[Rust artifact template\n(marker buffers)] -->|static asset| B[Template (on disk)]
-    C[CNA/Aggressor script] -->|embed container\n+ encrypted blob| D[Patched artifact]
+    A[Rust artifact template<br/> (marker buffers)] -->|static asset| B[Template (on disk)]
+    C[CNA/Aggressor script] -->|embed container + encrypted blob| D[Patched artifact]
   end
 
   subgraph Runtime
     D --> E[Container parse & validation]
-    E --> F[API resolver\n(PEB walk + hashing)]
-    E --> G[Section mapping\n(dual views)]
-    G --> H[Fiber trampoline\n(control transfer)]
+    E --> F[API resolver<br/>(PEB walk + hashing)]
+    E --> G[Section mapping<br/>(dual views)]
+    G --> H[Fiber trampoline<br/>(control transfer)]
   end
   F -.-> I[Forwarded exports]
 ```
