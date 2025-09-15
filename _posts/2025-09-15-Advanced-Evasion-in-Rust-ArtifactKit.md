@@ -41,11 +41,7 @@ We analyze a Rust‑based artifact loader architecture designed to reduce classi
 10. ATT&CK Mapping (High‑Level)
 11. Threat Model & Scope
 12. Limitations & Trade‑offs
-13. Lab Validation Protocol (Safe)
-14. Benchmarking Methodology (Non‑Payload Ops)
-15. Ethics, Legal, and Reproducibility Checklist
-16. Appendices (Glossary, Non‑Executable Snippets)
-17. Summary of Improvements
+13. Appendices (Glossary, Non‑Executable Snippets)
 
 ---
 
