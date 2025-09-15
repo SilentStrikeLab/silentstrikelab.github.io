@@ -293,13 +293,13 @@ for i in range(0, len(payload)):
     out[i] = payload[i] XOR key[i mod len(key)]
 ```
 
-```pseudo
+```cpp
 # Marker replacement
 loc := find_marker(template, MARKER)
 artifact := write_bytes(template, loc, container_bytes)
 ```
 
-```pseudo
+```cpp
 # Export scanning
 for each name in export_table.names:
     if hash(name) == target_hash: return address(name)
