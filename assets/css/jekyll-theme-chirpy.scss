@@ -1,0 +1,11 @@
+---
+---
+
+/* Import custom addon variables first */
+@import 'addon/variables';
+
+/* Import the main Chirpy theme */
+@import 'main';
+
+/* Import custom addon commons styles last to override */
+@import 'addon/commons';

@@ -14,10 +14,12 @@ timezone: Asia/Riyadh
 
 title: SilentStrike Blog # the main title
 
-tagline: Red Teaming, Weaponization, & Evasion Experts. We specialize in stealth operations, custom cybersecurity tools, and advanced phishing strategies
+tagline: Red Teaming, Weaponization, & Evasion Experts
 
 description: >- # used by SEO meta and the atom feed
-  SilentStrike specializes in red teaming, stealth operations, and detection engineering, offering advanced cybersecurity tools and training.
+  SilentStrike Blog - Technical insights on red teaming, offensive security,
+  detection engineering, malware development, EDR evasion, and advanced
+  cybersecurity research. Written by security experts for security professionals.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -32,10 +34,11 @@ twitter:
 social:
   # Author's name for copyright and posts
   name: SilentStrike
-  email: silentstrike@silentstrike.io # email address
+  email: contact@silentstrike.io # email address
   links:
     - https://twitter.com/silentstrikelab # Twitter link
     - https://github.com/silentstrikelab # GitHub link
+    - https://www.linkedin.com/company/silent-strike # LinkedIn link
 
 # Site Verification Settings
 webmaster_verifications:
@@ -77,7 +80,7 @@ theme_mode: dark
 cdn: "https://blog.silentstrike.io"
 
 # Avatar for the sidebar
-avatar: "/commons/av2.png"
+avatar: "/assets/img/logo.svg"
 
 # Site-wide social preview image used in SEO `og:image` meta tag.
 social_preview_image: "https://blog.silentstrike.io/commons/avatar.jpg"

@@ -1,0 +1,373 @@
+/* SilentStrike Custom Styles */
+/* Match the main website design aesthetic */
+
+/* Import custom variables */
+@import 'variables';
+
+/* Global styles */
+body {
+  background: $silentstrike-black !important;
+}
+
+/* Sidebar styling */
+#sidebar {
+  background: linear-gradient(180deg, $silentstrike-black 0%, rgba(5, 245, 155, 0.02) 100%) !important;
+  border-right: 1px solid rgba(5, 245, 155, 0.1) !important;
+
+  .site-title {
+    color: #ffffff !important;
+    font-weight: 700;
+
+    &:hover {
+      color: $silentstrike-green !important;
+    }
+  }
+
+  .site-subtitle {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+
+  .nav-item {
+    .nav-link {
+      color: rgba(255, 255, 255, 0.7) !important;
+      transition: all 0.3s ease;
+
+      &:hover,
+      &.active {
+        color: $silentstrike-green !important;
+        background: rgba(5, 245, 155, 0.1) !important;
+      }
+    }
+  }
+
+  /* Avatar glow effect */
+  #avatar {
+    border: 2px solid rgba(5, 245, 155, 0.3) !important;
+    box-shadow: 0 0 20px rgba(5, 245, 155, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $silentstrike-green !important;
+      box-shadow: 0 0 30px rgba(5, 245, 155, 0.4);
+    }
+  }
+
+  /* Social icons */
+  .social-wrapper {
+    a {
+      color: rgba(255, 255, 255, 0.5) !important;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: $silentstrike-green !important;
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+/* Main content area */
+#main-wrapper {
+  background: $silentstrike-black !important;
+}
+
+/* Post cards */
+.post-preview,
+.card {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(5, 245, 155, 0.1) !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    border-color: rgba(5, 245, 155, 0.3) !important;
+    background: rgba(5, 245, 155, 0.05) !important;
+    box-shadow: 0 10px 40px rgba(5, 245, 155, 0.1) !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* Post titles */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff !important;
+}
+
+.post-title,
+.card-title {
+  color: #ffffff !important;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $silentstrike-green !important;
+  }
+}
+
+/* Links */
+a {
+  color: $silentstrike-green !important;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $silentstrike-cyan !important;
+    text-decoration: none !important;
+  }
+}
+
+/* Post content */
+.post-content {
+  color: rgba(255, 255, 255, 0.85) !important;
+
+  p {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  strong {
+    color: #ffffff !important;
+  }
+
+  /* Code blocks */
+  pre {
+    background: rgba(5, 245, 155, 0.05) !important;
+    border: 1px solid rgba(5, 245, 155, 0.15) !important;
+    border-radius: 8px !important;
+  }
+
+  code {
+    color: $silentstrike-green !important;
+    background: rgba(5, 245, 155, 0.1) !important;
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  pre code {
+    background: transparent !important;
+    padding: 0;
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-left: 3px solid $silentstrike-green !important;
+    background: rgba(5, 245, 155, 0.05) !important;
+    padding: 1rem !important;
+    border-radius: 0 8px 8px 0 !important;
+  }
+}
+
+/* Tags */
+.tag,
+.post-tag,
+a[class*="tag"] {
+  background: rgba(5, 245, 155, 0.1) !important;
+  color: $silentstrike-green !important;
+  border: 1px solid rgba(5, 245, 155, 0.2) !important;
+  border-radius: 20px !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background: rgba(5, 245, 155, 0.2) !important;
+    border-color: $silentstrike-green !important;
+  }
+}
+
+/* Categories */
+.categories {
+  .card-body {
+    a {
+      color: rgba(255, 255, 255, 0.8) !important;
+
+      &:hover {
+        color: $silentstrike-green !important;
+      }
+    }
+  }
+}
+
+/* Table of Contents */
+#toc-wrapper {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(5, 245, 155, 0.1) !important;
+  border-radius: 12px !important;
+
+  .toc-link {
+    color: rgba(255, 255, 255, 0.6) !important;
+
+    &:hover,
+    &.active {
+      color: $silentstrike-green !important;
+    }
+  }
+}
+
+/* Search box */
+#search-input {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(5, 245, 155, 0.2) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+
+  &:focus {
+    border-color: $silentstrike-green !important;
+    box-shadow: 0 0 10px rgba(5, 245, 155, 0.2) !important;
+  }
+}
+
+/* Buttons */
+.btn {
+  background: $silentstrike-green !important;
+  color: $silentstrike-black !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background: $silentstrike-cyan !important;
+    box-shadow: 0 0 20px rgba(5, 245, 155, 0.4) !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* Footer */
+footer {
+  background: $silentstrike-black !important;
+  border-top: 1px solid rgba(5, 245, 155, 0.1) !important;
+
+  a {
+    color: rgba(255, 255, 255, 0.5) !important;
+
+    &:hover {
+      color: $silentstrike-green !important;
+    }
+  }
+}
+
+/* Pagination */
+.pagination {
+  .page-item {
+    .page-link {
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 1px solid rgba(5, 245, 155, 0.1) !important;
+      color: rgba(255, 255, 255, 0.7) !important;
+      border-radius: 8px !important;
+
+      &:hover {
+        background: rgba(5, 245, 155, 0.1) !important;
+        border-color: $silentstrike-green !important;
+        color: $silentstrike-green !important;
+      }
+    }
+
+    &.active .page-link {
+      background: $silentstrike-green !important;
+      border-color: $silentstrike-green !important;
+      color: $silentstrike-black !important;
+    }
+  }
+}
+
+/* Archive page */
+.post-list {
+  .post-item {
+    border-bottom: 1px solid rgba(5, 245, 155, 0.1) !important;
+
+    &:hover {
+      background: rgba(5, 245, 155, 0.03) !important;
+    }
+  }
+}
+
+/* Badge and label */
+.badge {
+  background: rgba(5, 245, 155, 0.1) !important;
+  color: $silentstrike-green !important;
+}
+
+/* Back to top button */
+#back-to-top {
+  background: $silentstrike-green !important;
+  color: $silentstrike-black !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 20px rgba(5, 245, 155, 0.3) !important;
+
+  &:hover {
+    box-shadow: 0 0 30px rgba(5, 245, 155, 0.5) !important;
+  }
+}
+
+/* Selection highlight */
+::selection {
+  background: rgba(5, 245, 155, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(5, 245, 155, 0.3);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba(5, 245, 155, 0.5);
+  }
+}
+
+/* Glow effects for emphasis */
+.highlight-green {
+  color: $silentstrike-green;
+  text-shadow: 0 0 10px rgba(5, 245, 155, 0.5);
+}
+
+/* Mobile menu */
+#sidebar-trigger {
+  color: $silentstrike-green !important;
+}
+
+/* Topbar */
+#topbar-wrapper {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(5, 245, 155, 0.1) !important;
+}
+
+/* Dark mode toggle */
+.mode-toggle {
+  color: rgba(255, 255, 255, 0.5) !important;
+
+  &:hover {
+    color: $silentstrike-green !important;
+  }
+}
+
+/* Post metadata */
+.post-meta {
+  color: rgba(255, 255, 255, 0.5) !important;
+
+  a {
+    color: rgba(255, 255, 255, 0.6) !important;
+
+    &:hover {
+      color: $silentstrike-green !important;
+    }
+  }
+}
+
+/* Related posts */
+.related-posts {
+  .card {
+    background: rgba(255, 255, 255, 0.02) !important;
+  }
+}
+
+/* Update indicator */
+.post-update-mark {
+  background: $silentstrike-green !important;
+  color: $silentstrike-black !important;
+}

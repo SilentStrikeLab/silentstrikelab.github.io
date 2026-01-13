@@ -1,0 +1,28 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#05f59b" />
+      <stop offset="100%" stop-color="#00d4ff" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#000"/>
+
+  <!-- Shield Outline -->
+  <path
+    d="M16 4L6 8v7c0 6 4 11.5 10 13 6-1.5 10-7 10-13V8L16 4z"
+    fill="none"
+    stroke="url(#logoGradient)"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Lightning Bolt -->
+  <path
+    d="M17.5 8L11 17h5l-1.5 7L21 15h-5l1.5-7z"
+    fill="url(#logoGradient)"
+  />
+</svg>
