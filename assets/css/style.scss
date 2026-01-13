@@ -1,0 +1,67 @@
+---
+---
+
+/*
+ * SilentStrike Blog - Custom Theme Colors
+ * Only override CSS variables - DO NOT modify layout
+ */
+
+/* Import the base Chirpy theme first */
+@import 'main';
+
+/* Override only color variables for dark mode */
+:root[data-mode="dark"],
+:root {
+  /* Brand accent */
+  --link-color: #05f59b;
+  --link-hover-color: #00d4ff;
+
+  /* Sidebar */
+  --sidebar-bg: #000;
+  --sidebar-active-color: #05f59b;
+  --avatar-border-color: rgba(5, 245, 155, 0.3);
+
+  /* Main content */
+  --main-bg: #000;
+  --body-bg: #000;
+
+  /* Cards */
+  --card-bg: rgba(255, 255, 255, 0.02);
+  --card-hovor-bg: rgba(5, 245, 155, 0.05);
+
+  /* Code */
+  --code-bg: rgba(5, 245, 155, 0.08);
+  --highlighter-rouge-color: #05f59b;
+
+  /* Tags */
+  --tag-bg: rgba(5, 245, 155, 0.1);
+  --tag-hover: rgba(5, 245, 155, 0.2);
+
+  /* Accent elements */
+  --checkbox-color: #05f59b;
+  --btn-active-bg: #05f59b;
+  --toc-highlight: #05f59b;
+  --blockquote-border-color: #05f59b;
+}
+
+/* Minimal accent styling - NO layout changes */
+a:hover {
+  color: #00d4ff !important;
+}
+
+/* Avatar glow */
+#sidebar #avatar {
+  box-shadow: 0 0 20px rgba(5, 245, 155, 0.2);
+}
+
+/* Accent button */
+.btn-primary,
+#back-to-top {
+  background: #05f59b !important;
+  color: #000 !important;
+}
+
+/* Selection */
+::selection {
+  background: rgba(5, 245, 155, 0.3);
+}
