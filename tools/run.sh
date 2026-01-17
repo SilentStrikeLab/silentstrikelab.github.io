@@ -11,7 +11,7 @@ help() {
   echo
   echo "   bash /path/to/run [options]"
   echo
-  echo "Options:"
+  echo "Options: "
   echo "     -H, --host [HOST]    Host to bind to."
   echo "     -p, --production     Run Jekyll in 'production' mode."
   echo "     -h, --help           Print this help information."
