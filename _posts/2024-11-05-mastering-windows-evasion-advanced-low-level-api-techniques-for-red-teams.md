@@ -7,7 +7,7 @@ tags: [Windows API, EDR Evasion, Stealth, Persistence, Kernel Manipulation]
 ---
 
 # Unleashing Advanced Evasion Techniques in Windows with Low-Level API Manipulation
-
+ 
 ## Introduction
 
 In advanced adversarial operations, bypassing EDRs and security monitoring requires control over system internals that goes well beyond typical API hooking or patching. This article explores advanced techniques using deeply embedded, undocumented Windows functions and layered strategies that allow malware to stay hidden, avoid detection, and gain resilient persistence.
