@@ -7,7 +7,7 @@ command="bundle exec jekyll s -l"
 host="127.0.0.1"
 
 help() {
-  echo "Usage:"
+  echo "Usage"
   echo
   echo "   bash /path/to/run [options]"
   echo
